@@ -23,15 +23,17 @@ export function activate(context: vscode.ExtensionContext) {
 					// once we have the mission data (as ISpaceXLauch type)
 					.then( ( mission:spaceXutils.ISpaceXLaunch ) => {
 						// make sure we got result data
-						console.log(mission);
-					});
+						if (mission) {
 							// display the web page containing the mission information (see utils functions)
 							
 							// after storing the data the user receives a success notification 
-
+							vscode.window.showInformationMessage(`Retrieved all information about SpaceX launch ${selectedMission}!`);
 						// if no result
-
+						} else {
 							// in case of an error he will receive an error notification
+							vscode.window.showErrorMessage('SpaceX launch data could not be fetched!');
+						}
+					});
 			});
 	});
 
