@@ -17,13 +17,14 @@ export function activate(context: vscode.ExtensionContext) {
 		// display a quickpick containing all SpaceX missions (look at the utils functions to retrieve them)
 		vscode.window.showQuickPick( spaceXutils.getAllSpaceXMissions() ) 
 			// once the user selected a mission
-			.then( ( selectedMission ) => { console.log(selectedMission); });
+			.then( ( selectedMission ) => {
 				// retrieve the selected mission (look at the utils functions to retrieve it)
-
+				spaceXutils.getSpaceXMission(selectedMission)
 					// once we have the mission data (as ISpaceXLauch type)
-
+					.then( ( mission:spaceXutils.ISpaceXLaunch ) => {
 						// make sure we got result data
-
+						console.log(mission);
+					});
 							// display the web page containing the mission information (see utils functions)
 							
 							// after storing the data the user receives a success notification 
@@ -31,7 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
 						// if no result
 
 							// in case of an error he will receive an error notification
-
+			});
 	});
 
 	context.subscriptions.push(disposable);
