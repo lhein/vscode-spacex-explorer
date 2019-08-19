@@ -3,7 +3,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import * as spaceXutils from './utils';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -15,29 +14,23 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('spacex.browser', () => {
 
 		// display a quickpick containing all SpaceX missions (look at the utils functions to retrieve them)
-		vscode.window.showQuickPick( spaceXutils.getAllSpaceXMissions() ) 
+
 			// once the user selected a mission
-			.then( ( selectedMission ) => {
+
 				// retrieve the selected mission (look at the utils functions to retrieve it)
-				spaceXutils.getSpaceXMission(selectedMission)
+
 					// once we have the mission data (as ISpaceXLauch type)
-					.then( ( mission:spaceXutils.ISpaceXLaunch ) => {
+
 						// make sure we got result data
-						if (mission) {
-							let viewTitle = `SpaceX - ${mission.mission_name} (${mission.launch_year})`;
-							let content = spaceXutils.generateHTMLPageForLaunch(mission);
 
 							// display the web page containing the mission information (see utils functions)
-							spaceXutils.openMissionPage(viewTitle, content, context);
 							
 							// after storing the data the user receives a success notification 
-							vscode.window.showInformationMessage(`Retrieved all information about SpaceX launch ${selectedMission}!`);
-						} else {
+
+						// if no result
+
 							// in case of an error he will receive an error notification
-							vscode.window.showErrorMessage('SpaceX launch data could not be fetched!');
-						}
-					});
-			});
+
 	});
 
 	context.subscriptions.push(disposable);
