@@ -3,10 +3,11 @@
 import * as vscode from 'vscode';
 
 const fetch = require('node-fetch');
+const fs = require('fs');
 
-export const ID_NAME_SEPARATOR = ' - ';
+const ID_NAME_SEPARATOR = ' - ';
 
-export const SPACEX_ENDPOINT = 'https://api.spacexdata.com/v3/launches';
+const SPACEX_ENDPOINT = 'https://api.spacexdata.com/v3/launches';
 
 export interface IPayload {
 	payload_id: string;
@@ -56,11 +57,11 @@ export interface ISpaceXLaunch {
 	details: string;
 }
 
-export function callApi<T>(url: string): Promise<T> {
+function callApi<T>(url: string): Promise<T> {
 	return fetch(url).then( res => res.json() as Promise<T>);
 }
 
-export function getIdFromSelection(sel: string): string {
+function getIdFromSelection(sel: string): string {
 	return sel.split(ID_NAME_SEPARATOR)[0];
 }
 
@@ -91,16 +92,63 @@ export function getSpaceXMission(missionItem: string | undefined): Promise<ISpac
 	});
 }
 
-export function openMissionPage(viewTitle: string, content: string): void {
+function filterJS(html: string): string {
+	let startScriptIdx = html.indexOf('<script>');
+	let stopScriptIdx = html.indexOf('</script>') + '</script>'.length;
+	let startBtnIdx = html.indexOf('<button ');
+	let stopBtnIdx = html.indexOf('</button>') + '</button>'.length;
+	let res: string = html.slice(0, startScriptIdx);
+	res = res + html.slice(stopScriptIdx, startBtnIdx);
+	res = res + html.slice(stopBtnIdx);
+	console.log(res);
+	return res;
+}
+
+export function openMissionPage(viewTitle: string, content: string, context: vscode.ExtensionContext): void {
 	const panel = vscode.window.createWebviewPanel(
 		'spaceX',
 		viewTitle,
 		vscode.ViewColumn.One,
-		{}
+		{
+			// Enable scripts in the webview
+			enableScripts: true,
+			retainContextWhenHidden: true
+		}
 	);
-							
+
+	// Handle messages from the webview
+	panel.webview.onDidReceiveMessage(
+		message => {
+			console.log(message);
+			if (message.command === 'save') {
+				vscode.window.showSaveDialog( {} ).then( (uri : vscode.Uri | undefined) => {
+					if (uri) {
+						let filePath = uri.fsPath ? uri.fsPath : uri.path;
+						let saved: boolean = saveHTMLToFile(filterJS(panel.webview.html), filePath);
+						if (saved) {
+							vscode.window.showInformationMessage(`Mission Overview has been stored to ${filePath}...`);
+						} else {
+							vscode.window.showErrorMessage(`Unable to store mission overview to ${filePath}...`);
+						}
+					}
+				});
+			}
+		},
+		undefined,
+		context.subscriptions
+	);
+
 	// And set its HTML content
 	panel.webview.html = content;
+}
+
+function saveHTMLToFile(html: string, filePath: string): boolean {
+	fs.writeFileSync(filePath, html, (err) => {
+		if (err) {
+			return false;
+		}
+	});
+	return true;
 }
 
 export function generateHTMLPageForLaunch(launch: ISpaceXLaunch): string {
@@ -113,6 +161,15 @@ export function generateHTMLPageForLaunch(launch: ISpaceXLaunch): string {
 					<title>SpaceX Launch #${launch.flight_number} - ${launch.mission_name} (${launch.launch_year})</title>
 				</head>
 				<body>
+					<script>
+						const vscode = acquireVsCodeApi();
+						function sendMsg() {
+							vscode.postMessage({
+								command: 'save',
+								text: 'save'
+							})
+						}
+					</script>
 					<center>
 						<img src="${launch.links.mission_patch_small}"/><br/><br/><br/>
 						<div><b>Flight Number: </b>${launch.flight_number}</div><br/>
@@ -121,7 +178,7 @@ export function generateHTMLPageForLaunch(launch: ISpaceXLaunch): string {
 						<div><b>Launch Year: </b>${launch.launch_year}</div><br/>
 						<div><b>Launch Site: </b>${launch.launch_site.site_name_long}</div><br/>
 						<div><b>Local Launch Time: </b>${launch.launch_date_local}</div><br/>
-						<div><b>Rocket Type: </b>${launch.rocket.rocket_name} (${launch.rocket.rocket_type}6)</div><br/>
+						<div><b>Rocket Type: </b>${launch.rocket.rocket_name} (${launch.rocket.rocket_type})</div><br/>
 						<div><b>Payload: </b>
 							<table border=1>
 								<tr>
@@ -168,7 +225,10 @@ export function generateHTMLPageForLaunch(launch: ISpaceXLaunch): string {
 								<tr>
 									<td><a href="${launch.links.video_link}">Video</a></td>
 								</tr>
-						</div>
+							</table>
+						</div><br/><br/>
+						<button onclick="sendMsg()">Save to File...</button>
+						<br/><br/>
 					</center>
 				</body>
 			</html>`;
