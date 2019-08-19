@@ -3,6 +3,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as spaceXutils from './utils';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -14,9 +15,9 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('spacex.browser', () => {
 
 		// display a quickpick containing all SpaceX missions (look at the utils functions to retrieve them)
-
+		vscode.window.showQuickPick( spaceXutils.getAllSpaceXMissions() ) 
 			// once the user selected a mission
-
+			.then( ( selectedMission ) => { console.log(selectedMission); });
 				// retrieve the selected mission (look at the utils functions to retrieve it)
 
 					// once we have the mission data (as ISpaceXLauch type)
