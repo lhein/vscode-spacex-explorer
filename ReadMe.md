@@ -1,15 +1,16 @@
 # User Story
 
-We want to be able to browse all SpaceX launches and find out where it launched, if it was a success and what payload for which country was aboard.
+We want to be able to browse all past and future SpaceX launches and find out where it launched, if it was a success and what payload for which country was aboard.
 
 The SpaceX API allows access to this information: https://github.com/r-spacex/SpaceX-API
 
-# The Flow
+# Flow
+
 - the user invokes the command "_Browse SpaceX Missions_"
 
 - a list of all available SpaceX missions is displayed
 
-- the user selects one of the available missions from the list __OR__ hits ```ESC``` to display the latest finished mission
+- the user selects one of the available missions from the list __OR__ hits ```ESC``` to display the latest finished mission (used as shortcut)
 
 - the mission data is displayed as web page inside VSCode
 
@@ -19,6 +20,8 @@ The SpaceX API allows access to this information: https://github.com/r-spacex/Sp
 # Hints
 
 - install node-fetch via "_npm add node-fetch_" because its required by ```utils.ts```
+
+- install fs via "_npm add fs_" because its required by ```utils.ts```
 
 - use the "_Problems_" view at the bottom to find possible issues
 
