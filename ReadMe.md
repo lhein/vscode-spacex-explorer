@@ -21,23 +21,23 @@ The SpaceX API allows access to this information: https://github.com/r-spacex/Sp
 
 - DO NOT use this repository as your project to start with. Instead use the one we created during the slides...
 
-- the file ```extension.ts``` contains a skeleton with useful comments. Feel free to copy it over!
+- the file ```src/extension.ts``` contains a skeleton with useful comments. Feel free to copy it over!
 
-- install node-fetch via "_npm add node-fetch_" because its required by ```utils.ts```
+- install node-fetch via "_npm add node-fetch_" because its required by ```src/utils.ts```
 
-- install fs via "_npm add fs_" because its required by ```utils.ts```
+- install fs via "_npm add fs_" because its required by ```src/utils.ts```
 
 - use the "_Problems_" view at the bottom to find possible issues
 
-- get the ```utils.ts``` file from the git repository https://github.com/lhein/vscode-spacex-explorer and copy it next to your ```extension.ts``` file
+- get the ```src/utils.ts``` file from the git repository https://github.com/lhein/vscode-spacex-explorer and copy it next to your ```src/extension.ts``` file
 
-- ```utils.ts``` contains some useful helper functions to solve the above tasks
+- ```src/utils.ts``` contains some useful helper functions to solve the above tasks
 
-- import ```utils.ts``` via "_import * as utils from './utils';_"
+- import ```src/utils.ts``` via "_import * as utils from './utils';_"
 
-- you can access functions of the ```utils.ts``` file via "_utils.functionName_"
+- you can access functions of the ```src/utils.ts``` file via "_utils.functionName_"
 
-- ```utils.ts``` contains some datastructures (_interfaces_) needed to work with the json results of the api calls
+- ```src/utils.ts``` contains some datastructures (_interfaces_) needed to work with the json results of the api calls
 
 - to show a drop down list to the user VSCode provides _vscode.window.showQuickPick()_ function (see https://code.visualstudio.com/api/references/vscode-api#window)
 
