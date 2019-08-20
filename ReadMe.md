@@ -19,6 +19,10 @@ The SpaceX API allows access to this information: https://github.com/r-spacex/Sp
 
 # Hints
 
+- DO NOT use this repository as your project to start with. Instead use the one we created during the slides...
+
+- the file ```extension.ts``` contains a skeleton with useful comments. Feel free to copy it over!
+
 - install node-fetch via "_npm add node-fetch_" because its required by ```utils.ts```
 
 - install fs via "_npm add fs_" because its required by ```utils.ts```
