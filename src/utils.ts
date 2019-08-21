@@ -2,6 +2,9 @@
 
 import * as vscode from 'vscode';
 
+declare var require: any;
+declare var Promise: any;
+
 const fetch = require('node-fetch');
 const fs = require('fs');
 
@@ -150,9 +153,9 @@ function saveHTMLToFile(html: string, filePath: string): boolean {
 }
 
 export function generateHTMLPageForLaunch(launch: ISpaceXLaunch): string {
-	let statusColor = launch.launch_success ? 'green' : 'red';
-	let missionResult = launch.launch_success.toString().toUpperCase();
-	missionResult = missionResult === 'FAILURE' || missionResult === 'FALSE' ? 'FAILURE' : 'SUCCESS';
+	let statusColor = launch && launch.launch_success ? launch.launch_success ? 'green' : 'red' : 'blue';
+	let missionResult = launch && launch.launch_success ? launch.launch_success.toString().toUpperCase() : 'UNKNOWN';
+	missionResult = missionResult === 'UNKNOWN' ? 'PENDING' : missionResult === 'FAILURE' || missionResult === 'FALSE' ? 'FAILURE' : 'SUCCESS';
 	let html:string = 
 			`<html>
 				<head>
